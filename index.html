@@ -1,44 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Geotag - Draggable</title>
+    <title>Geotag 30% Canvas Draw</title>
     <style>
         :root {
-            --primary-color: #2e7d32;
-            --accent-color: #ffeb3b;
-            --bg-color: #f1f8e9;
+            --bg-color: #e8f5e9;
             --panel-bg: #ffffff;
-            --text-main: #1b5e20;
-            --text-secondary: #424242;
-            --font-stack: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --primary-color: #2c3e50;
+            --accent-color: #2979ff;
+            --accent-yellow: #fdd835;
+            --border-radius: 12px;
+            --input-bg: #f8f9fa;
+            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: var(--font-stack);
+            font-family: var(--font-family);
             background-color: var(--bg-color);
-            color: var(--text-secondary);
+            color: var(--primary-color);
             display: flex;
             height: 100vh;
             overflow: hidden;
         }
 
+        /* --- LAYOUT --- */
         .app-container { display: flex; width: 100%; height: 100%; }
-
-        /* Sidebar Controls */
+        
         .controls {
-            width: 380px;
+            width: 350px;
             background: var(--panel-bg);
-            padding: 30px;
+            padding: 25px;
             display: flex;
             flex-direction: column;
             gap: 20px;
-            box-shadow: 2px 0 15px rgba(0,0,0,0.05);
-            z-index: 10;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.05);
             overflow-y: auto;
+            z-index: 20;
         }
 
         .preview-area {
@@ -47,72 +48,77 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            background-color: #c8e6c9;
-            background-image: radial-gradient(#a5d6a7 15%, transparent 16%), radial-gradient(#a5d6a7 15%, transparent 16%);
+            background-color: #dcedc8;
+            background-image: 
+                linear-gradient(45deg, #dcedc8 25%, transparent 25%), 
+                linear-gradient(-45deg, #dcedc8 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #dcedc8 75%), 
+                linear-gradient(-45deg, transparent 75%, #dcedc8 75%);
             background-size: 20px 20px;
-            background-position: 0 0, 10px 10px;
-            overflow: hidden;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
             padding: 40px;
+            overflow: hidden;
         }
 
         /* --- FORM ELEMENTS --- */
-        h1 { font-size: 22px; color: var(--text-main); margin-bottom: 5px; }
-        p.subtitle { font-size: 13px; color: #757575; margin-bottom: 25px; }
-        
-        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 15px; }
-        label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #7cb342; }
+        h2 { font-size: 18px; margin-bottom: 5px; color: #1b5e20; }
+        p.desc { font-size: 13px; color: #666; margin-bottom: 15px; line-height: 1.4; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 12px; font-weight: 600; color: #546e7a; text-transform: uppercase; }
         
         input[type="text"], textarea {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #e0e0e0;
             border-radius: 6px;
+            background-color: var(--input-bg);
             font-family: inherit;
-            font-size: 14px;
-            transition: border-color 0.2s;
+            font-size: 13px;
         }
         input[type="text"]:focus, textarea:focus {
-            border-color: var(--primary-color);
+            border-color: var(--accent-color);
+            background-color: #fff;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
         }
         textarea { resize: vertical; min-height: 80px; }
 
+        input[type="range"] { width: 100%; cursor: pointer; }
+
         .btn {
-            padding: 14px 20px;
+            padding: 12px 20px;
             border: none;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 15px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            font-size: 14px;
         }
         .btn-upload {
-            background-color: #f1f8e9;
-            color: var(--text-main);
-            border: 2px dashed #c5e1a5;
+            background-color: #fff;
+            border: 2px dashed #ccc;
+            color: #555;
             width: 100%;
         }
-        .btn-upload:hover { background-color: #dcedc8; border-color: #9ccc65; }
+        .btn-upload:hover { border-color: var(--accent-color); color: var(--accent-color); background: #f5f9ff; }
         
         .btn-download {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, #2979ff 0%, #1565c0 100%);
             color: white;
-            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
-            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(41, 121, 255, 0.3);
+            margin-top: auto;
         }
-        .btn-download:hover { background-color: #1b5e20; transform: translateY(-1px); }
+        .btn-download:hover { box-shadow: 0 6px 14px rgba(41, 121, 255, 0.4); transform: translateY(-1px); }
 
-        /* --- PREVIEW & OVERLAY --- */
+        /* --- PREVIEW & DRAG/RESIZE --- */
         .image-wrapper {
             position: relative;
-            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             max-width: 100%;
-            max-height: 85vh;
+            max-height: 100%;
             user-select: none;
             line-height: 0;
         }
@@ -121,109 +127,119 @@
             max-width: 100%;
             max-height: 85vh;
             display: block;
+            border-radius: 4px;
             pointer-events: none;
         }
 
-        /* The Geotag Overlay */
-        #geotag-overlay {
+        /* The Stamp Overlay */
+        #preview-overlay {
             position: absolute;
-            /* Initial position set by JS */
-            background-color: rgba(232, 245, 233, 0.9);
-            backdrop-filter: blur(2px);
-            border-radius: 12px;
-            padding: 15px 20px;
-            cursor: move; /* Indicates draggable */
-            font-family: 'Segoe UI', sans-serif;
-            color: #000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            border: 1px solid rgba(255,255,255,0.3);
-            width: 55%;
-            touch-action: none; /* Important for mobile drag */
+            background-color: transparent; 
+            box-shadow: none; 
+            border: none; 
+            cursor: move;
+            user-select: none;
+            font-family: var(--font-family);
+            touch-action: none; 
+            transition: outline 0.2s;
+        }
+        #preview-overlay:hover {
+            outline: 1px dashed rgba(0,0,0,0.3);
         }
         
-        #geotag-overlay:active {
-            cursor: grabbing;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-            transform: scale(1.01);
-        }
-
-        /* Overlay Internal Structure */
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        
-        .badge {
-            background-color: var(--accent-color);
-            color: #000;
-            font-weight: 800;
-            font-size: 14px;
-            padding: 4px 10px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .time {
-            font-size: 32px;
-            font-weight: 800;
-            background: linear-gradient(180deg, #2196f3 0%, #0d47a1 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            line-height: 1;
-        }
-
-        .date { font-size: 15px; font-weight: 600; color: #1b5e20; margin-bottom: 12px; }
-
-        .address-block {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 12px;
-            align-items: flex-start;
-        }
-        
-        .accent-line {
-            width: 3px;
-            background-color: var(--accent-color);
-            border-radius: 1.5px;
-            flex-shrink: 0;
-            align-self: stretch;
-        }
-
-        .address {
-            font-size: 13px;
-            color: #2e7d32;
-            line-height: 1.4;
-            word-break: break-word;
-        }
-
-        .divider { height: 1px; background-color: rgba(0,0,0,0.1); margin-bottom: 10px; }
-
-        .footer {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            font-weight: 500;
-            color: #1b5e20;
-        }
-        .shield-icon { width: 14px; height: 16px; fill: currentColor; }
-
-        .empty-state { text-align: center; color: #7cb342; }
-        
-        /* Resize Handle (Optional but good to keep from previous version) */
+        /* Resize Handle */
         .resize-handle {
-            width: 20px;
-            height: 20px;
-            background: rgba(0,0,0,0.1);
-            border: 2px solid white;
+            width: 24px;
+            height: 24px;
+            background: var(--accent-color);
+            border: 2px solid #fff;
             border-radius: 50%;
             position: absolute;
-            bottom: -10px;
-            right: -10px;
+            bottom: -12px;
+            right: -12px;
             cursor: nwse-resize;
-            opacity: 0;
-            transition: opacity 0.2s;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        #geotag-overlay:hover .resize-handle { opacity: 1; }
+        .resize-handle::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-bottom: 2px solid #fff;
+            border-right: 2px solid #fff';
+            transform: rotate(45deg);
+            margin-bottom: 2px;
+            margin-right: 2px;
+        }
+        .resize-handle { opacity: 0; transition: opacity 0.2s; }
+        .resize-handle:hover, #preview-overlay:hover .resize-handle { opacity: 1; }
+
+        /* --- CONTENT STYLES --- */
+        .dom-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        
+        .dom-badge { 
+            background: var(--accent-yellow); color: #000; font-weight: 800; 
+            padding: 8px 30px; 
+            border-radius: 6px; font-size: 14px; text-transform: uppercase; 
+            white-space: nowrap;
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+            text-shadow: 0px 1px 2px rgba(0,0,0,0.3);
+            line-height: 1; 
+        }
+
+        .dom-time { 
+            font-weight: 800; font-size: 36px; 
+            background: linear-gradient(180deg, #0d47a1 0%, #000000 100%);
+            -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        
+        .dom-date { font-size: 16px; font-weight: 600; color: #000000; margin-bottom: 10px; text-shadow: 0px 0px 4px rgba(255,255,255,0.5); }
+        
+        .dom-address-wrapper { 
+            display: flex; 
+            position: relative; 
+            margin-bottom: 15px; 
+            width: 100%;
+        }
+        .dom-address-line {
+            width: 3px; 
+            background-color: var(--accent-yellow); 
+            border-radius: 2px; 
+            margin-right: 10px; 
+            flex-shrink: 0; 
+            align-self: stretch;
+        }
+        .dom-address { 
+            font-size: 14px; 
+            color: #000000; 
+            line-height: 1.4; 
+            white-space: normal; 
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            flex-grow: 1; 
+            text-shadow: 0px 0px 4px rgba(255,255,255,0.5);
+        }
+
+        .dom-divider { height: 1px; background-color: #ffffff; margin-bottom: 12px; opacity: 0.5; }
+        
+        .dom-footer { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 13px; 
+            font-weight: 500; 
+            color: rgba(255, 255, 255, 0.7); 
+            text-shadow: 0px 1px 3px rgba(0,0,0,0.8);
+        }
+        .dom-shield { width: 16px; height: 18px; fill: currentColor; flex-shrink: 0; }
 
         .hidden { display: none !important; }
     </style>
@@ -234,15 +250,15 @@
         <!-- CONTROLS SIDEBAR -->
         <aside class="controls">
             <div>
-                <h1>Geotag Attendance</h1>
-                <p class="subtitle">Drag & Drop to reposition stamp.</p>
+                <h2>Geotag Settings</h2>
+                <p class="desc">Geotag 30% dari lebar gambar. Fixed Error.</p>
             </div>
 
             <div class="form-group">
                 <label>1. Upload Photo</label>
                 <input type="file" id="file-input" accept="image/*" class="hidden">
                 <button class="btn btn-upload" onclick="document.getElementById('file-input').click()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" y1="3" x2="12" y2="15"></line>
@@ -251,34 +267,43 @@
                 </button>
             </div>
 
-            <div id="settings-panel" class="hidden">
+            <div id="settings-form" class="hidden">
                 <div class="form-group">
-                    <label>Label Text</label>
-                    <input type="text" id="inp-label" value="ABSENSI">
+                    <label>Ukuran Kotak (Padding)</label>
+                    <input type="range" id="input-badge-padding" min="10" max="80" value="30">
+                    <div style="display:flex; justify-content:space-between; font-size:11px; color:#888;">
+                        <span>Padat</span>
+                        <span>Besar</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Label (Badge)</label>
+                    <input type="text" id="input-badge" value="Absensi">
                 </div>
 
                 <div class="form-group">
                     <label>Time (HH:MM)</label>
-                    <input type="text" id="inp-time" value="08:00">
+                    <input type="text" id="input-time" value="08:00">
                 </div>
 
                 <div class="form-group">
                     <label>Date</label>
-                    <input type="text" id="inp-date" value="Wednesday, 25 Oct 2023">
+                    <input type="text" id="input-date" value="Wednesday, 20/08/2025">
                 </div>
 
                 <div class="form-group">
                     <label>Location Address</label>
-                    <textarea id="inp-address">Jl. Jendral Sudirman Kav. 1, Central Jakarta, Indonesia.</textarea>
+                    <textarea id="input-address">Jl. Jendral Sudirman Kav. 1, RT.1/RW.2, Gelora, Tanah Abang, Central Jakarta City, Jakarta 10270</textarea>
                 </div>
 
                 <div class="form-group">
                     <label>Photo Code</label>
-                    <input type="text" id="inp-code" value="Photo Code: ID-882-X92">
+                    <input type="text" id="input-code" value="Photo Code: A1B2-C3D4-E5F6">
                 </div>
 
-                <button class="btn btn-download" id="btn-download">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <button class="btn btn-download" id="download-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         <polyline points="7 10 12 15 17 10"></polyline>
                         <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -291,63 +316,75 @@
         <!-- PREVIEW AREA -->
         <main class="preview-area" id="drop-zone">
             <div class="empty-state" id="empty-msg">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                     <circle cx="8.5" cy="8.5" r="1.5"></circle>
                     <polyline points="21 15 16 10 5 21"></polyline>
                 </svg>
-                <p style="margin-top:10px;">Upload a photo to start</p>
+                <p style="margin-top:10px; color:#aaa;">Upload photo</p>
             </div>
 
-            <div class="image-wrapper hidden" id="img-container">
+            <div class="image-wrapper hidden" id="image-container">
                 <img id="source-image" alt="Source">
-                
-                <!-- OVERLAY (Draggable) -->
-                <div id="geotag-overlay">
-                    <div class="header-row">
-                        <div class="badge" id="dom-label">ABSENSI</div>
-                        <div class="time" id="dom-time">08:00</div>
+                <div id="preview-overlay">
+                    <div class="dom-header">
+                        <div class="dom-badge" id="dom-badge">Absensi</div>
+                        <div class="dom-time" id="dom-time">08:00</div>
                     </div>
-                    <div class="date" id="dom-date">Wednesday, 25 Oct 2023</div>
-                    <div class="address-block">
-                        <div class="accent-line" id="dom-line"></div>
-                        <div class="address" id="dom-address">...</div>
+                    <div class="dom-date" id="dom-date">Wednesday, 20/08/2025</div>
+                    <div class="dom-address-wrapper">
+                        <div class="dom-address-line" id="dom-line"></div>
+                        <div class="dom-address" id="dom-address">...</div>
                     </div>
-                    <div class="divider"></div>
-                    <div class="footer">
-                        <svg class="shield-icon" viewBox="0 0 24 24">
+                    <div class="dom-divider"></div>
+                    <div class="dom-footer">
+                        <svg class="dom-shield" viewBox="0 0 24 24">
                             <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
                         </svg>
                         <span id="dom-code">Photo Code: XXXXXXXX</span>
                     </div>
                     
                     <!-- RESIZE HANDLE -->
-                    <div class="resize-handle" id="resize-handle"></div>
+                    <div class="resize-handle" id="resize-handle" title="Drag to resize"></div>
                 </div>
             </div>
         </main>
     </div>
 
     <script>
-        // --- CONFIG ---
-        const TARGET_LONG_SIDE = 2048;
-        const DEFAULT_OVERLAY_WIDTH_PERCENT = 0.55;
-        
-        // --- STATE ---
+        // --- CONFIG & STATE ---
+        const config = {
+            baseCardWidthPercent: 0.30, // SET KE 30% (Sesuai Permintaan)
+            colors: {
+                badgeBg: '#fdd835',
+                textPrimary: '#000000', 
+                textSecondary: '#000000', 
+                divider: '#ffffff',
+                timeStart: '#0d47a1', 
+                timeEnd: '#000000',
+                footerColor: 'rgba(255, 255, 255, 0.7)'
+            },
+            baseFontSizes: { 
+                badge: 14,
+                time: 36,
+                date: 16,
+                address: 14,
+                code: 13,
+                padding: 20,
+                cornerRadius: 16
+            }
+        };
+
         const state = {
-            img: null,
-            // Dragging State
             isDragging: false,
             isResizing: false,
-            dragStart: { x: 0, y: 0 },
-            initialPos: { x: 0, y: 0 },
-            initialDim: { w: 0, h: 0 },
-            
-            // Position (Relative to image container)
-            pos: { x: 20, y: 20 }, 
-            
-            scale: 1.0,
-            initialWidth: 0
+            dragStartX: 0,
+            dragStartY: 0,
+            posX: 0,
+            posY: 0,
+            currentScale: 1.0,
+            initialWidth: 0, 
+            isTransparent: true 
         };
 
         // --- DOM ELEMENTS ---
@@ -355,245 +392,266 @@
             fileInput: document.getElementById('file-input'),
             dropZone: document.getElementById('drop-zone'),
             sourceImage: document.getElementById('source-image'),
-            imgContainer: document.getElementById('img-container'),
+            imageContainer: document.getElementById('image-container'),
             emptyMsg: document.getElementById('empty-msg'),
-            settingsPanel: document.getElementById('settings-panel'),
-            overlay: document.getElementById('geotag-overlay'),
+            settingsForm: document.getElementById('settings-form'),
+            previewOverlay: document.getElementById('preview-overlay'),
             resizeHandle: document.getElementById('resize-handle'),
             
-            inpLabel: document.getElementById('inp-label'),
-            inpTime: document.getElementById('inp-time'),
-            inpDate: document.getElementById('inp-date'),
-            inpAddress: document.getElementById('inp-address'),
-            inpCode: document.getElementById('inp-code'),
+            // Inputs
+            inBadgePadding: document.getElementById('input-badge-padding'),
+            inBadge: document.getElementById('input-badge'),
+            inTime: document.getElementById('input-time'),
+            inDate: document.getElementById('input-date'),
+            inAddress: document.getElementById('input-address'),
+            inCode: document.getElementById('input-code'),
             
-            domLabel: document.getElementById('dom-label'),
+            // DOM Preview Content
+            domBadge: document.getElementById('dom-badge'),
             domTime: document.getElementById('dom-time'),
             domDate: document.getElementById('dom-date'),
             domAddress: document.getElementById('dom-address'),
             domCode: document.getElementById('dom-code'),
-            domLine: document.getElementById('dom-line')
+            domLine: document.getElementById('dom-line'),
+            domHeader: document.querySelector('.dom-header'),
+            domAddressWrapper: document.querySelector('.dom-address-wrapper'),
+            domDivider: document.querySelector('.dom-divider')
         };
 
+        let originalImage = null;
+
         // --- EVENT LISTENERS ---
-        els.fileInput.addEventListener('change', handleFile);
-        els.dropZone.addEventListener('dragover', (e) => { e.preventDefault(); });
+        els.fileInput.addEventListener('change', handleFileSelect);
+        els.dropZone.addEventListener('dragover', (e) => { e.preventDefault(); els.dropZone.style.backgroundColor = '#dcedc8'; });
+        els.dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); els.dropZone.style.backgroundColor = ''; });
         els.dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
-            if (e.dataTransfer.files.length) handleFile({ target: { files: e.dataTransfer.files } });
+            els.dropZone.style.backgroundColor = '';
+            if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
         });
 
-        // Input Updates
-        [els.inpLabel, els.inpTime, els.inpDate, els.inpAddress, els.inpCode].forEach(inp => {
-            inp.addEventListener('input', updateDOMText);
+        [els.inBadgePadding, els.inBadge, els.inTime, els.inDate, els.inAddress, els.inCode].forEach(input => {
+            input.addEventListener('input', updatePreviewContent);
         });
 
-        document.getElementById('btn-download').addEventListener('click', generateExport);
+        document.getElementById('download-btn').addEventListener('click', generate2KDownload);
 
         // --- DRAG & RESIZE LOGIC ---
-        els.overlay.addEventListener('mousedown', (e) => {
-            if(e.target === els.resizeHandle) return;
+        els.previewOverlay.addEventListener('mousedown', (e) => {
+            if (e.target === els.resizeHandle) return;
+            startDrag(e);
+        });
+        els.previewOverlay.addEventListener('touchstart', (e) => {
+             if (e.target === els.resizeHandle) return;
+             startDrag(e);
+        }, {passive: false});
+
+        els.resizeHandle.addEventListener('mousedown', startResize);
+        els.resizeHandle.addEventListener('touchstart', startResize, {passive: false});
+
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('touchmove', handleMove, {passive: false});
+
+        window.addEventListener('mouseup', endInteraction);
+        window.addEventListener('touchend', endInteraction);
+
+        function startDrag(e) {
+            e.preventDefault();
             state.isDragging = true;
-            state.dragStart.x = e.clientX;
-            state.dragStart.y = e.clientY;
-            state.initialPos.x = state.pos.x;
-            state.initialPos.y = state.pos.y;
-        });
+            const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+            state.dragStartX = clientX - els.previewOverlay.offsetLeft;
+            state.dragStartY = clientY - els.previewOverlay.offsetTop;
+            els.previewOverlay.style.cursor = 'grabbing';
+            els.resizeHandle.style.opacity = '0';
+        }
 
-        els.resizeHandle.addEventListener('mousedown', (e) => {
+        function startResize(e) {
             e.stopPropagation();
+            e.preventDefault();
             state.isResizing = true;
-            state.dragStart.x = e.clientX;
-            state.initialDim.w = els.overlay.offsetWidth;
-            state.initialWidth = els.overlay.offsetWidth; // Reset base width for scale calc
-        });
+            const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            state.resizeStartX = clientX;
+            state.resizeStartWidth = els.previewOverlay.offsetWidth;
+            state.resizeStartScale = state.currentScale;
+        }
 
-        window.addEventListener('mousemove', (e) => {
+        function handleMove(e) {
             if (state.isDragging) {
-                const dx = e.clientX - state.dragStart.x;
-                const dy = e.clientY - state.dragStart.y;
+                const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
                 
-                let newX = state.initialPos.x + dx;
-                let newY = state.initialPos.y + dy;
-                
-                // Boundary Check
-                const maxX = els.imgContainer.offsetWidth - els.overlay.offsetWidth;
-                const maxY = els.imgContainer.offsetHeight - els.overlay.offsetHeight;
-                
-                state.pos.x = Math.max(0, Math.min(newX, maxX));
-                state.pos.y = Math.max(0, Math.min(newY, maxY));
-                
-                updatePosition();
-            } else if (state.isResizing) {
-                const dx = e.clientX - state.dragStart.x;
-                const newWidth = state.initialDim.w + dx;
-                const newScale = Math.max(0.5, Math.min(newWidth / state.initialWidth, 1.5));
-                state.scale = newScale;
-                updateSize();
-            }
-        });
+                let newLeft = clientX - state.dragStartX;
+                let newTop = clientY - state.dragStartY;
 
-        window.addEventListener('mouseup', () => {
+                const maxLeft = els.imageContainer.offsetWidth - els.previewOverlay.offsetWidth;
+                const maxTop = els.imageContainer.offsetHeight - els.previewOverlay.offsetHeight;
+                
+                newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+                newTop = Math.max(0, Math.min(newTop, maxTop));
+
+                els.previewOverlay.style.left = newLeft + 'px';
+                els.previewOverlay.style.top = newTop + 'px';
+
+                state.posX = newLeft / els.imageContainer.offsetWidth;
+                state.posY = newTop / els.imageContainer.offsetHeight;
+            } 
+            else if (state.isResizing) {
+                const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                const deltaX = clientX - state.resizeStartX;
+                const newWidth = state.resizeStartWidth + deltaX;
+                const newScale = Math.max(0.5, Math.min(newWidth / state.initialWidth, 2.5)); 
+
+                state.currentScale = newScale;
+                applyScaleStyles();
+            }
+        }
+
+        function endInteraction() {
             state.isDragging = false;
             state.isResizing = false;
-        });
-        
-        // Touch support for dragging
-        els.overlay.addEventListener('touchstart', (e) => {
-             if(e.target === els.resizeHandle) return;
-             state.isDragging = true;
-             const touch = e.touches[0];
-             state.dragStart.x = touch.clientX;
-             state.dragStart.y = touch.clientY;
-             state.initialPos.x = state.pos.x;
-             state.initialPos.y = state.pos.y;
-        });
-        window.addEventListener('touchmove', (e) => {
-            if(!state.isDragging) return;
-            const touch = e.touches[0];
-            const dx = touch.clientX - state.dragStart.x;
-            const dy = touch.clientY - state.dragStart.y;
-            let newX = state.initialPos.x + dx;
-            let newY = state.initialPos.y + dy;
-            const maxX = els.imgContainer.offsetWidth - els.overlay.offsetWidth;
-            const maxY = els.imgContainer.offsetHeight - els.overlay.offsetHeight;
-            state.pos.x = Math.max(0, Math.min(newX, maxX));
-            state.pos.y = Math.max(0, Math.min(newY, maxY));
-            updatePosition();
-        });
-        window.addEventListener('touchend', () => {
-            state.isDragging = false;
-        });
+            els.previewOverlay.style.cursor = 'move';
+            els.resizeHandle.style.opacity = '';
+        }
 
         // --- CORE LOGIC ---
-        function handleFile(e) {
-            if (!e.target.files.length) return;
-            const file = e.target.files[0];
-            if (!file.type.startsWith('image/')) return alert('Please upload an image.');
+        function handleFileSelect(e) {
+            if (e.target.files.length) handleFile(e.target.files[0]);
+        }
 
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) return alert('Please upload an image file.');
             const reader = new FileReader();
-            reader.onload = (evt) => {
-                els.sourceImage.src = evt.target.result;
+            reader.onload = (e) => {
+                els.sourceImage.src = e.target.result;
                 els.sourceImage.onload = () => {
-                    state.img = els.sourceImage;
+                    originalImage = els.sourceImage;
                     els.emptyMsg.classList.add('hidden');
-                    els.imgContainer.classList.remove('hidden');
-                    els.settingsPanel.classList.remove('hidden');
-                    resetOverlay();
-                    updateDOMText();
-                }
+                    els.imageContainer.classList.remove('hidden');
+                    els.settingsForm.classList.remove('hidden');
+                    resetOverlayState();
+                    updatePreviewContent();
+                };
             };
             reader.readAsDataURL(file);
         }
 
-        function resetOverlay() {
-            // Default to Bottom-Left with Padding
-            const containerW = els.imgContainer.offsetWidth;
-            const containerH = els.imgContainer.offsetHeight;
-            const padding = 30;
-            const targetW = containerW * DEFAULT_OVERLAY_WIDTH_PERCENT;
+        function resetOverlayState() {
+            const imgW = els.imageContainer.offsetWidth;
+            const targetWidth = imgW * config.baseCardWidthPercent;
             
-            state.initialWidth = targetW;
-            state.scale = 1.0;
+            state.initialWidth = targetWidth; 
+            state.currentScale = 1.0;
             
-            els.overlay.style.width = targetW + 'px';
-            updateSize();
+            els.previewOverlay.style.width = targetWidth + 'px';
+            applyScaleStyles();
 
-            // Calculate Position
-            state.pos.x = padding;
-            state.pos.y = containerH - els.overlay.offsetHeight - padding;
-            updatePosition();
+            requestAnimationFrame(() => {
+                const cardH = els.previewOverlay.offsetHeight;
+                const padding = 30;
+                const newLeft = imgW - targetWidth - padding;
+                const newTop = els.imageContainer.offsetHeight - cardH - padding;
+                
+                els.previewOverlay.style.left = Math.max(0, newLeft) + 'px';
+                els.previewOverlay.style.top = Math.max(0, newTop) + 'px';
+
+                state.posX = els.previewOverlay.offsetLeft / imgW;
+                state.posY = els.previewOverlay.offsetTop / els.imageContainer.offsetHeight;
+            });
         }
 
-        function updatePosition() {
-            els.overlay.style.left = state.pos.x + 'px';
-            els.overlay.style.top = state.pos.y + 'px';
-            els.domLine.style.height = els.domAddress.offsetHeight + 'px';
-        }
+        function applyScaleStyles() {
+            const s = state.currentScale;
+            const newWidth = state.initialWidth * s;
+            els.previewOverlay.style.width = newWidth + 'px';
 
-        function updateSize() {
-            const s = state.scale;
-            const baseW = els.imgContainer.offsetWidth * DEFAULT_OVERLAY_WIDTH_PERCENT;
-            const finalW = baseW * s;
-            els.overlay.style.width = finalW + 'px';
+            const fs = config.baseFontSizes;
 
-            // Apply Scale to Fonts/Padding
-            els.overlay.style.padding = (15 * s) + 'px ' + (20 * s) + 'px';
-            els.overlay.style.borderRadius = (12 * s) + 'px';
-            els.domLabel.style.fontSize = (14 * s) + 'px';
-            els.domTime.style.fontSize = (32 * s) + 'px';
-            els.domDate.style.fontSize = (15 * s) + 'px';
-            els.domAddress.style.fontSize = (13 * s) + 'px';
-            els.domCode.style.fontSize = (12 * s) + 'px';
+            els.domBadge.style.fontSize = (fs.badge * s) + 'px';
+            els.domTime.style.fontSize = (fs.time * s) + 'px';
+            els.domDate.style.fontSize = (fs.date * s) + 'px';
+            els.domAddress.style.fontSize = (fs.address * s) + 'px';
+            els.domCode.style.fontSize = (fs.code * s) + 'px';
             
-            // Margin adjustments
-            els.domDate.style.marginBottom = (12 * s) + 'px';
-            els.domAddress.parentElement.style.marginBottom = (12 * s) + 'px';
-            document.querySelector('.divider').style.marginBottom = (10 * s) + 'px';
-            document.querySelector('.footer').style.gap = (8 * s) + 'px';
-            
-            els.domLine.style.height = els.domAddress.offsetHeight + 'px';
+            els.previewOverlay.style.padding = (fs.padding * s) + 'px';
+            els.previewOverlay.style.borderRadius = (fs.cornerRadius * s) + 'px';
+            els.domHeader.style.marginBottom = (12 * s) + 'px'; 
+            els.domDate.style.marginBottom = (10 * s) + 'px';
+            els.domAddressWrapper.style.marginBottom = (15 * s) + 'px';
+            els.domDivider.style.marginBottom = (12 * s) + 'px';
+            els.domAddressLine.style.marginRight = (10 * s) + 'px';
+            els.domAddressLine.style.width = (3 * s) + 'px';
+
+            const padBase = parseInt(els.inBadgePadding.value);
+            const padY = (padBase * 0.8) * s; 
+            const padX = padBase * s;
+            els.domBadge.style.padding = `${padY}px ${padX}px`;
+
+            const newLineHeight = (fs.address * s * 1.4);
+            els.domAddress.style.lineHeight = newLineHeight + 'px';
+
+            requestAnimationFrame(() => {
+                els.domLine.style.height = 'auto';
+                els.domLine.style.height = els.domAddress.offsetHeight + 'px';
+            });
         }
 
-        function updateDOMText() {
-            els.domLabel.textContent = els.inpLabel.value;
-            els.domTime.textContent = els.inpTime.value;
-            els.domDate.textContent = els.inpDate.value;
-            els.domAddress.textContent = els.inpAddress.value;
-            els.domCode.textContent = els.inpCode.value;
-            els.domLine.style.height = els.domAddress.offsetHeight + 'px';
+        function updatePreviewContent() {
+            if (!originalImage) return;
+            els.domBadge.textContent = els.inBadge.value;
+            els.domTime.textContent = els.inTime.value;
+            els.domDate.textContent = els.inDate.value;
+            els.domAddress.textContent = els.inAddress.value;
+            els.domCode.textContent = els.inCode.value;
+
+            const s = state.currentScale;
+            const padBase = parseInt(els.inBadgePadding.value);
+            const padY = (padBase * 0.8) * s;
+            const padX = padBase * s;
+            els.domBadge.style.padding = `${padY}px ${padX}px`;
+
+            requestAnimationFrame(() => {
+                els.domLine.style.height = 'auto';
+                els.domLine.style.height = els.domAddress.offsetHeight + 'px';
+            });
         }
 
-        // --- EXPORT LOGIC (SCALED & ACCURATE) ---
-        function generateExport() {
-            if (!state.img) return;
-            const btn = document.getElementById('btn-download');
+        // --- 2K GENERATION (CANVAS DRAWING - STABLE METHOD) ---
+        function generate2KDownload() {
+            if (!originalImage) return;
+            const btn = document.getElementById('download-btn');
             const originalText = btn.innerHTML;
-            btn.innerHTML = 'Rendering...';
+            btn.innerHTML = 'Processing...';
 
             setTimeout(() => {
                 try {
-                    const imgW = state.img.naturalWidth;
-                    const imgH = state.img.naturalHeight;
-                    
-                    // 1. Calculate 2K Dimensions
+                    const targetLongSide = 2048;
+                    const aspectRatio = originalImage.naturalWidth / originalImage.naturalHeight;
                     let canvasW, canvasH;
-                    if (imgW > imgH) {
-                        canvasW = TARGET_LONG_SIDE;
-                        canvasH = (TARGET_LONG_SIDE / imgW) * imgH;
-                    } else {
-                        canvasH = TARGET_LONG_SIDE;
-                        canvasW = (TARGET_LONG_SIDE / imgH) * imgW;
-                    }
 
-                    // 2. Calculate Export Scale (DOM -> Canvas)
-                    const domW = els.imgContainer.offsetWidth;
-                    const domH = els.imgContainer.offsetHeight;
-                    const exportScale = canvasW / domW; 
+                    if (originalImage.naturalWidth > originalImage.naturalHeight) {
+                        canvasW = targetLongSide;
+                        canvasH = targetLongSide / aspectRatio;
+                    } else {
+                        canvasH = targetLongSide;
+                        canvasW = targetLongSide * aspectRatio;
+                    }
 
                     const canvas = document.createElement('canvas');
                     canvas.width = canvasW;
                     canvas.height = canvasH;
                     const ctx = canvas.getContext('2d');
-                    
-                    // High Quality Settings
-                    ctx.imageSmoothingEnabled = true;
-                    ctx.imageSmoothingQuality = 'high';
 
-                    // Draw Image
-                    ctx.drawImage(state.img, 0, 0, canvasW, canvasH);
+                    ctx.drawImage(originalImage, 0, 0, canvasW, canvasH);
+                    drawStampOnCanvas(ctx, canvasW, canvasH);
 
-                    // Draw Overlay using DOM coordinates * exportScale
-                    drawOverlayOnCanvas(ctx, canvasW, canvasH, exportScale);
-
-                    // Download
                     const link = document.createElement('a');
-                    link.download = `geotag_${Date.now()}.jpg`;
-                    link.href = canvas.toDataURL('image/jpeg', 0.95);
+                    link.download = 'geotag-30percent-' + Date.now() + '.png';
+                    link.href = canvas.toDataURL('image/png', 1.0);
                     link.click();
 
-                } catch(e) {
-                    console.error(e);
+                } catch (err) {
+                    console.error(err);
                     alert('Error generating image.');
                 } finally {
                     btn.innerHTML = originalText;
@@ -601,113 +659,117 @@
             }, 100);
         }
 
-        function drawOverlayOnCanvas(ctx, cw, ch, scale) {
-            const s = scale * state.scale; // Combined scale
-            
-            const padX = 20 * s;
-            const padY = 15 * s;
-            
-            const baseW = cw * DEFAULT_OVERLAY_WIDTH_PERCENT;
-            const overlayW = baseW * state.scale; 
-            
-            // CRITICAL: Convert DOM Pixel Position to Canvas Position
-            const x = state.pos.x * scale;
-            const y = state.pos.y * scale;
+        function drawStampOnCanvas(ctx, canvasW, canvasH) {
+            const s = state.currentScale;
+            const fs = config.baseFontSizes;
 
-            // Calculate Height based on content
-            ctx.font = `800 ${14 * s}px 'Segoe UI'`;
-            const badgeH = 24 * s;
-            const dateH = 20 * s;
+            // --- 1. EXACT POSITION MATCHING ---
+            // Calculate card size based on visual ratio from DOM
+            const previewImgW = els.sourceImage.offsetWidth;
+            const previewOverlayW = els.previewOverlay.offsetWidth;
+            const cardWidthRatio = previewOverlayW / previewImgW;
             
-            ctx.font = `normal ${13 * s}px 'Segoe UI'`;
-            const maxAddrW = overlayW - (padX * 2) - (3 * s) - (10 * s);
-            const addrLines = getWrappedLines(ctx, els.inpAddress.value, maxAddrW);
-            const addrH = addrLines.length * (13 * s * 1.4);
-            
-            const footerH = 20 * s;
-            const dividerM = 12 * s;
-            const totalH = badgeH + (12*s) + dateH + (12*s) + addrH + dividerM + 1 + footerH + (padY*2);
+            const cardW = canvasW * cardWidthRatio;
+            const cardX = state.posX * canvasW;
+            const cardY = state.posY * canvasH;
 
-            // 1. Background
-            ctx.fillStyle = "rgba(232, 245, 233, 0.9)";
-            roundRect(ctx, x, y, overlayW, totalH, 12 * s);
+            const padding = fs.padding * s;
+            const cornerRadius = fs.cornerRadius * s;
+
+            // Setup Shadow
+            ctx.shadowColor = "rgba(0, 0, 0, 0.6)";
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetY = 2;
+
+            // --- HEADER: Badge & Time ---
+            const badgeText = els.inBadge.value;
+            ctx.fillStyle = config.colors.badgeBg;
+            ctx.font = `800 ${fs.badge * s}px 'Segoe UI', sans-serif`;
+            
+            const padBase = parseInt(els.inBadgePadding.value);
+            const padX = padBase * s;
+            const padY = (padBase * 0.8) * s; 
+
+            const badgeW = ctx.measureText(badgeText).width + (padX * 2);
+            // FIX: Badge Height using line-height 1.0 (Matches CSS line-height: 1)
+            const badgeH = (fs.badge * s) + (padY * 2);
+
+            // Draw Badge
+            roundRect(ctx, cardX + padding, cardY + padding, badgeW, badgeH, 6*s);
             ctx.fill();
 
-            // 2. Badge
-            const badgeText = els.inpLabel.value;
-            ctx.fillStyle = "#ffeb3b";
-            const badgeWText = ctx.measureText(badgeText).width + (10 * s * 2);
-            roundRect(ctx, x + padX, y + padY, badgeWText, badgeH, 4 * s);
-            ctx.fill();
-            ctx.fillStyle = "#000";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.font = `800 ${14 * s}px 'Segoe UI'`;
-            ctx.fillText(badgeText, x + padX + badgeWText/2, y + padY + badgeH/2);
+            // Draw Badge Text (Centered)
+            ctx.fillStyle = '#000000';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(badgeText, cardX + padding + (badgeW/2), cardY + padding + (badgeH/2));
 
-            // 3. Time
-            const timeText = els.inpTime.value;
+            // --- TIME (Aligned Center) ---
+            const timeText = els.inTime.value;
             ctx.save();
-            ctx.font = `800 ${32 * s}px 'Segoe UI'`;
+            ctx.font = `800 ${fs.time * s}px 'Segoe UI', sans-serif`;
             const timeW = ctx.measureText(timeText).width;
-            const timeX = x + overlayW - padX - timeW;
-            const timeY = y + padY + badgeH/2;
+            const timeX = cardX + cardW - padding - timeW;
+            const timeY = (cardY + padding) + (badgeH/2);
             
             ctx.beginPath();
-            ctx.rect(timeX, timeY - (16*s), timeW, 32*s);
+            ctx.rect(timeX, timeY - (fs.time*s/2), timeW, fs.time*s);
             ctx.clip();
-            const grad = ctx.createLinearGradient(0, timeY - (16*s), 0, timeY + (16*s));
-            grad.addColorStop(0, "#2196f3");
-            grad.addColorStop(1, "#0d47a1");
+            const grad = ctx.createLinearGradient(0, timeY - (fs.time*s/2), 0, timeY + (fs.time*s/2));
+            grad.addColorStop(0, config.colors.timeStart);
+            grad.addColorStop(1, config.colors.timeEnd);
             ctx.fillStyle = grad;
-            ctx.textBaseline = "alphabetic";
-            ctx.fillText(timeText, timeX, timeY + (4*s));
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText(timeText, timeX, timeY);
             ctx.restore();
 
-            // 4. Date
-            ctx.fillStyle = "#1b5e20";
-            ctx.font = `600 ${15 * s}px 'Segoe UI'`;
-            ctx.textAlign = "left";
-            ctx.textBaseline = "top";
-            let currY = y + padY + badgeH + (12 * s);
-            ctx.fillText(els.inpDate.value, x + padX, currY);
+            // --- DATE ---
+            ctx.fillStyle = config.colors.textPrimary;
+            ctx.font = `600 ${fs.date * s}px 'Segoe UI', sans-serif`;
+            ctx.textBaseline = 'top';
+            let currentY = (cardY + padding) + badgeH + (12 * s);
+            ctx.fillText(els.inDate.value, cardX + padding, currentY);
 
-            // 5. Address
-            currY += dateH + (12 * s);
-            ctx.fillStyle = "#ffeb3b";
-            const lineW = 3 * s;
-            ctx.fillRect(x + padX, currY, lineW, addrH);
+            // --- ADDRESS ---
+            currentY += (fs.date * s) + (10 * s);
             
-            ctx.fillStyle = "#2e7d32";
-            const textX = x + padX + lineW + (10 * s);
-            addrLines.forEach((line, i) => {
-                ctx.fillText(line, textX, currY + (i * (13 * s * 1.4)));
+            const lineX = cardX + padding;
+            const lineW = 3 * s;
+            
+            ctx.font = `normal ${fs.address * s}px 'Segoe UI', sans-serif`;
+            
+            // Calculate available width
+            let maxAddrW = cardW - (padding * 2) - (3 * s) - (10 * s);
+            
+            // FIX: Call getLines with Buffer for perfect wrap
+            const addressLines = getLines(ctx, els.inAddress.value, maxAddrW);
+            
+            const textLineH = fs.address * s * 1.4;
+            const totalAddrH = addressLines.length * textLineH;
+
+            ctx.fillStyle = config.colors.badgeBg;
+            ctx.fillRect(lineX, currentY, lineW, totalAddrH);
+
+            ctx.fillStyle = config.colors.textSecondary; // Hitam
+            const textX = lineX + lineW + (10 * s);
+            addressLines.forEach((line, i) => {
+                ctx.fillText(line, textX, currentY + (i * textLineH));
             });
-            currY += addrH;
+            currentY += totalAddrH;
 
-            // 6. Divider
-            currY += dividerM;
-            ctx.fillStyle = "rgba(0,0,0,0.1)";
-            ctx.fillRect(x + padX, currY, overlayW - (padX*2), 1);
+            // --- DIVIDER ---
+            currentY += (15 * s);
+            ctx.fillStyle = config.colors.divider;
+            ctx.fillRect(cardX + padding, currentY, cardW - (padding*2), 1*s);
 
-            // 7. Footer
-            currY += 10 * s;
-            const shieldS = 16 * s;
-            ctx.fillStyle = "#1b5e20";
-            ctx.save();
-            ctx.translate(x + padX, currY);
-            ctx.scale(shieldS/24, shieldS/24);
-            ctx.beginPath();
-            ctx.moveTo(12, 1); ctx.lineTo(3, 5); ctx.lineTo(3, 11);
-            ctx.bezierCurveTo(3, 16.55, 6.84, 21.74, 12, 23);
-            ctx.bezierCurveTo(17.16, 21.74, 21, 16.55, 21, 11);
-            ctx.lineTo(21, 5); ctx.lineTo(12, 1);
-            ctx.fill();
-            ctx.restore();
+            // --- FOOTER ---
+            currentY += (10 * s);
+            const shieldSize = 18 * s;
+            drawShield(ctx, cardX + padding, currentY + (2*s), shieldSize);
 
-            ctx.font = `500 ${12 * s}px 'Segoe UI'`;
-            ctx.textBaseline = "middle";
-            ctx.fillText(els.inpCode.value, x + padX + shieldS + (8*s), currY + (shieldS/2));
+            ctx.fillStyle = config.colors.footerColor;
+            ctx.font = `500 ${fs.code * s}px 'Segoe UI', sans-serif`;
+            ctx.textBaseline = 'middle';
+            ctx.fillText(els.inCode.value, cardX + padding + shieldSize + (8 * s), currentY + (shieldSize/2));
         }
 
         function roundRect(ctx, x, y, w, h, r) {
@@ -722,22 +784,68 @@
             ctx.closePath();
         }
 
-        function getWrappedLines(ctx, text, maxWidth) {
+        function getLines(ctx, text, maxWidth) {
             const words = text.split(" ");
-            let lines = [];
+            const lines = [];
+            
+            // Buffer kecil (2px) untuk menyamakan hasil Canvas dengan perhitungan DOM yang sedikit lebih longgar
+            const safeMaxWidth = maxWidth + 2; 
+
+            if (words.length === 0) return [""];
+            
             let currentLine = words[0];
+
+            // Cek kata pertama
+            if (ctx.measureText(currentLine).width > maxWidth && currentLine.length > 0) {
+                 const chars = currentLine.split('');
+                 let tempLine = "";
+                 for(let char of chars) {
+                     if(ctx.measureText(tempLine + char).width > maxWidth) {
+                         if(tempLine) lines.push(tempLine);
+                         tempLine = char;
+                     } else {
+                         tempLine += char;
+                     }
+                 }
+                 if(tempLine) currentLine = tempLine;
+                 else currentLine = ""; 
+            }
+
             for (let i = 1; i < words.length; i++) {
                 const word = words[i];
                 const width = ctx.measureText(currentLine + " " + word).width;
-                if (width < maxWidth) {
+                
+                // Menggunakan safeMaxWidth
+                if (width < safeMaxWidth) {
                     currentLine += " " + word;
                 } else {
-                    lines.push(currentLine);
-                    currentLine = word;
+                    if (currentLine !== "") {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        lines.push(word); 
+                    }
                 }
             }
-            lines.push(currentLine);
+            if (currentLine !== "") lines.push(currentLine);
             return lines;
+        }
+
+        function drawShield(ctx, x, y, size) {
+            ctx.fillStyle = config.colors.footerColor; 
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.scale(size / 24, size / 24);
+            ctx.beginPath();
+            ctx.moveTo(12, 1);
+            ctx.lineTo(3, 5);
+            ctx.lineTo(3, 11);
+            ctx.bezierCurveTo(3, 16.55, 6.84, 21.74, 12, 23);
+            ctx.bezierCurveTo(17.16, 21.74, 21, 16.55, 21, 11);
+            ctx.lineTo(21, 5);
+            ctx.lineTo(12, 1);
+            ctx.fill();
+            ctx.restore();
         }
     </script>
 </body>
