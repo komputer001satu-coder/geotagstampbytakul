@@ -1,540 +1,749 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GEOTAG BY TAKUL</title>
+    <title>Geotag Transparent & Auto Badge</title>
     <style>
         :root {
-            --primary-color: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg-color: #f3f4f6;
-            --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --text-muted: #6b7280;
-            --border-color: #e5e7eb;
-            --radius-lg: 12px;
-            --radius-md: 8px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --bg-color: #e8f5e9;
+            --panel-bg: #ffffff;
+            --primary-color: #2c3e50;
+            --accent-color: #2979ff;
+            --accent-yellow: #fdd835;
+            --border-radius: 12px;
+            --input-bg: #f8f9fa;
+            --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
+            font-family: var(--font-family);
             background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
+            color: var(--primary-color);
             display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            background: var(--card-bg);
-            padding: 1rem 2rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
-        header h1 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        main {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 2rem;
-            padding: 2rem;
-            max-width: 1600px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        @media (max-width: 900px) {
-            main {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .controls {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
-            height: fit-content;
-        }
-
-        .control-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .control-group label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-main);
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            font-size: 0.95rem;
-            transition: border-color 0.2s;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        /* Slider Styling */
-        input[type="range"] {
-            width: 100%;
-            cursor: pointer;
-        }
-
-        .file-upload-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100px;
-            border: 2px dashed var(--border-color);
-            border-radius: var(--radius-md);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: #fafafa;
-        }
-
-        .file-upload-wrapper:hover {
-            border-color: var(--primary-color);
-            background: #eff6ff;
-        }
-
-        .file-upload-wrapper input[type="file"] {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .color-picker-row {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .color-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        input[type="color"] {
-            -webkit-appearance: none;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            height: 100vh;
             overflow: hidden;
-            cursor: pointer;
         }
 
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 0.875rem;
-            border: none;
-            border-radius: var(--radius-md);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            background-color: var(--primary-color);
-            color: white;
-            transition: background 0.2s;
-        }
-
-        .btn:hover {
-            background-color: var(--primary-hover);
-        }
+        /* --- LAYOUT --- */
+        .app-container { display: flex; width: 100%; height: 100%; }
         
-        .btn:disabled {
-            background-color: #cbd5e1;
-            cursor: not-allowed;
+        .controls {
+            width: 350px;
+            background: var(--panel-bg);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+            overflow-y: auto;
+            z-index: 20;
         }
 
         .preview-area {
+            flex: 1;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            background: #e5e5e5;
-            border-radius: var(--radius-lg);
-            padding: 1rem;
-            overflow: auto;
-            position: relative;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
-            min-height: 400px;
-        }
-        
-        .canvas-container {
-            line-height: 0;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
-            background: transparent;
-        }
-
-        canvas {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-        
-        .empty-state {
-            text-align: center;
-            color: var(--text-muted);
-            margin-top: 100px;
-        }
-
-        .loading-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.8);
-            display: none;
             justify-content: center;
             align-items: center;
+            position: relative;
+            background-color: #dcedc8;
+            background-image: 
+                linear-gradient(45deg, #dcedc8 25%, transparent 25%), 
+                linear-gradient(-45deg, #dcedc8 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #dcedc8 75%), 
+                linear-gradient(-45deg, transparent 75%, #dcedc8 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            padding: 40px;
+            overflow: hidden;
+        }
+
+        /* --- FORM ELEMENTS --- */
+        h2 { font-size: 18px; margin-bottom: 5px; color: #1b5e20; }
+        p.desc { font-size: 13px; color: #666; margin-bottom: 15px; line-height: 1.4; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 12px; font-weight: 600; color: #546e7a; text-transform: uppercase; }
+        
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: var(--input-bg);
+            font-family: inherit;
+            font-size: 13px;
+        }
+        input[type="text"]:focus, textarea:focus {
+            border-color: var(--accent-color);
+            background-color: #fff;
+            outline: none;
+        }
+        textarea { resize: vertical; min-height: 80px; }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
             font-weight: 600;
-            z-index: 10;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
         }
+        .btn-upload {
+            background-color: #fff;
+            border: 2px dashed #ccc;
+            color: #555;
+            width: 100%;
+        }
+        .btn-upload:hover { border-color: var(--accent-color); color: var(--accent-color); background: #f5f9ff; }
         
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            background: #1f2937;
+        .btn-download {
+            background: linear-gradient(135deg, #2979ff 0%, #1565c0 100%);
             color: white;
-            padding: 1rem 1.5rem;
-            border-radius: var(--radius-md);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            transform: translateY(150%);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 100;
+            box-shadow: 0 4px 10px rgba(41, 121, 255, 0.3);
+            margin-top: auto;
+        }
+        .btn-download:hover { box-shadow: 0 6px 14px rgba(41, 121, 255, 0.4); transform: translateY(-1px); }
+
+        /* --- PREVIEW & DRAG/RESIZE --- */
+        .image-wrapper {
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 100%;
+            max-height: 100%;
+            user-select: none;
+            line-height: 0;
         }
         
-        .toast.show {
-            transform: translateY(0);
+        #source-image {
+            max-width: 100%;
+            max-height: 85vh;
+            display: block;
+            border-radius: 4px;
+            pointer-events: none;
         }
+
+        /* The Stamp Overlay - TRANSPARENT BY DEFAULT */
+        #preview-overlay {
+            position: absolute;
+            background-color: transparent; /* Diubah jadi transparan */
+            box-shadow: none; /* Hapus bayangan kotak */
+            border: none; /* Hapus border */
+            cursor: move;
+            user-select: none;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            touch-action: none; 
+            /* Memberi sedikit border tipis putih saat hover agar mudah dilihat posisinya */
+            transition: outline 0.2s;
+        }
+        #preview-overlay:hover {
+            outline: 1px dashed rgba(0,0,0,0.3);
+        }
+        
+        /* Resize Handle */
+        .resize-handle {
+            width: 24px;
+            height: 24px;
+            background: var(--accent-color);
+            border: 2px solid #fff;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -12px;
+            right: -12px;
+            cursor: nwse-resize;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .resize-handle::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-bottom: 2px solid #fff;
+            border-right: 2px solid #fff;
+            transform: rotate(45deg);
+            margin-bottom: 2px;
+            margin-right: 2px;
+        }
+        .resize-handle { opacity: 0; transition: opacity 0.2s; }
+        .resize-handle:hover, #preview-overlay:hover .resize-handle { opacity: 1; }
+
+        /* --- CONTENT STYLES --- */
+        .dom-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        
+        .dom-badge { 
+            background: var(--accent-yellow); color: #000; font-weight: 800; 
+            padding: 4px 12px; border-radius: 6px; font-size: 14px; text-transform: uppercase; 
+            white-space: nowrap;
+            display: inline-block; 
+            width: fit-content;   /* Lebar otomatis ikut teks */
+            /* Text Shadow for readability on transparent bg */
+            text-shadow: 0px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .dom-time { 
+            font-weight: 800; font-size: 36px; 
+            /* Gradien Biru Tua ke Hitam */
+            background: linear-gradient(180deg, #0d47a1 0%, #000000 100%);
+            -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1;
+            white-space: nowrap;
+            /* Shadow added via span or canvas logic, visually gradient text handles contrast well */
+        }
+        
+        .dom-date { font-size: 16px; font-weight: 600; color: #000000; margin-bottom: 10px; text-shadow: 0px 0px 4px rgba(255,255,255,0.5); }
+        
+        /* ADDRESS WRAPPING */
+        .dom-address-wrapper { 
+            display: flex; 
+            position: relative; 
+            margin-bottom: 15px; 
+            width: 100%;
+        }
+        .dom-address-line {
+            width: 3px; 
+            background-color: var(--accent-yellow); 
+            border-radius: 2px; 
+            margin-right: 10px; 
+            flex-shrink: 0; 
+            align-self: stretch;
+        }
+        .dom-address { 
+            font-size: 14px; 
+            color: #000000; 
+            line-height: 1.4; 
+            white-space: normal; 
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-word;
+            flex-grow: 1; 
+            text-shadow: 0px 0px 4px rgba(255,255,255,0.5);
+        }
+
+        .dom-divider { height: 1px; background-color: #ffffff; margin-bottom: 12px; opacity: 0.5; }
+        
+        .dom-footer { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 13px; 
+            font-weight: 500; 
+            /* Putih transparan 70% + Shadow */
+            color: rgba(255, 255, 255, 0.7); 
+            text-shadow: 0px 1px 3px rgba(0,0,0,0.8);
+        }
+        .dom-shield { width: 16px; height: 18px; fill: currentColor; flex-shrink: 0; }
+
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Geotag By TAKUL <span style="font-weight:normal; font-size:0.8em; color:gray;">(OLEH MISUH YA, TAPI OJOK PAKE EMOSI)</span></h1>
-    </header>
+    <div class="app-container">
+        <!-- CONTROLS SIDEBAR -->
+        <aside class="controls">
+            <div>
+                <h2>Geotag Settings</h2>
+                <p class="desc">Mode Full Transparan. Kotak Absensi Auto-Fit.</p>
+            </div>
 
-    <main>
-        <section class="controls">
-            <div class="control-group">
-                <label>Upload Photo</label>
-                <div class="file-upload-wrapper">
-                    <input type="file" id="imageInput" accept="image/png, image/jpeg">
-                    <div style="font-size:1.5rem;">📷</div>
-                    <div style="font-size:0.875rem; color:var(--text-muted);">Click to Upload Image</div>
+            <div class="form-group">
+                <label>1. Upload Photo</label>
+                <input type="file" id="file-input" accept="image/*" class="hidden">
+                <button class="btn btn-upload" onclick="document.getElementById('file-input').click()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Choose Image
+                </button>
+            </div>
+
+            <div id="settings-form" class="hidden">
+                <!-- Checkbox Transparan Dihapus karena default -->
+
+                <div class="form-group">
+                    <label>Label (Badge)</label>
+                    <input type="text" id="input-badge" value="Absensi">
+                </div>
+
+                <div class="form-group">
+                    <label>Time (HH:MM)</label>
+                    <input type="text" id="input-time" value="08:00">
+                </div>
+
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="text" id="input-date" value="Wednesday, 20/08/2025">
+                </div>
+
+                <div class="form-group">
+                    <label>Location Address</label>
+                    <textarea id="input-address">Jl. Jendral Sudirman Kav. 1, RT.1/RW.2, Gelora, Tanah Abang, Central Jakarta City, Jakarta 10270. Teks ini berwarna hitam dengan background transparan.</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Photo Code</label>
+                    <input type="text" id="input-code" value="Photo Code: A1B2-C3D4-E5F6">
+                </div>
+
+                <button class="btn btn-download" id="download-btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download 2K Image
+                </button>
+            </div>
+        </aside>
+
+        <!-- PREVIEW AREA -->
+        <main class="preview-area" id="drop-zone">
+            <div class="empty-state" id="empty-msg">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <p style="margin-top:10px; color:#aaa;">Upload photo</p>
+            </div>
+
+            <div class="image-wrapper hidden" id="image-container">
+                <img id="source-image" alt="Source">
+                <div id="preview-overlay">
+                    <div class="dom-header">
+                        <div class="dom-badge" id="dom-badge">Absensi</div>
+                        <div class="dom-time" id="dom-time">08:00</div>
+                    </div>
+                    <div class="dom-date" id="dom-date">Wednesday, 20/08/2025</div>
+                    <div class="dom-address-wrapper">
+                        <div class="dom-address-line" id="dom-line"></div>
+                        <div class="dom-address" id="dom-address">...</div>
+                    </div>
+                    <div class="dom-divider"></div>
+                    <div class="dom-footer">
+                        <svg class="dom-shield" viewBox="0 0 24 24">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                        </svg>
+                        <span id="dom-code">Photo Code: XXXXXXXX</span>
+                    </div>
+                    
+                    <!-- RESIZE HANDLE -->
+                    <div class="resize-handle" id="resize-handle" title="Drag to resize"></div>
                 </div>
             </div>
-
-            <div class="control-group">
-                <label>Main Label (e.g., MASUK 09:30)</label>
-                <input type="text" id="timeLabel" value="MASUK 09:30">
-            </div>
-
-            <div class="control-group">
-                <label>Date</label>
-                <input type="text" id="dateLabel" value="24 January 2024">
-            </div>
-
-            <div class="control-group">
-                <label>Address (Will Auto-Resize Card)</label>
-                <input type="text" id="addressLabel" value="Jalan apa, jalan yuk 🫶🏻." style="height: 80px;">
-            </div>
-
-            <div class="control-group">
-                <label>Card Opacity (Transparency) <span id="opacityVal">90%</span></label>
-                <input type="range" id="cardOpacity" min="0" max="1" step="0.05" value="0.9">
-            </div>
-
-            <div class="control-group">
-                <label>Colors</label>
-                <div class="color-picker-row">
-                    <div class="color-item">
-                        <input type="color" id="accentColor" value="#fbbf24">
-                        <label>Accent</label>
-                    </div>
-                    <div class="color-item">
-                        <input type="color" id="bgCardColor" value="#ffffff">
-                        <label>BG</label>
-                    </div>
-                    <div class="color-item">
-                        <input type="color" id="textColor" value="#1f2937">
-                        <label>Text</label>
-                    </div>
-                </div>
-            </div>
-
-            <button id="downloadBtn" class="btn" disabled>Download Image</button>
-        </section>
-
-        <section class="preview-area">
-            <div class="canvas-container">
-                <canvas id="outputCanvas"></canvas>
-                <div id="emptyState" class="empty-state">
-                    <h3>No Image</h3>
-                    <p>Upload a photo to edit.</p>
-                </div>
-            </div>
-            <div id="loadingOverlay" class="loading-overlay">Processing...</div>
-        </section>
-    </main>
-
-    <div id="toast" class="toast">Download started!</div>
+        </main>
+    </div>
 
     <script>
-        // --- Configuration ---
-        const TARGET_WIDTH_2K = 2560; // Fixed 2K Width
-        
-        // Base design constants (reference for 2560px width)
-        const BASE_WIDTH = 2560; 
-        const BASE_CARD_WIDTH = 650;
-        const BASE_FONT_LABEL = 48;
-        const BASE_FONT_DATE = 32;
-        const BASE_FONT_ADDR = 36;
-        const BASE_ACCENT_LINE_HEIGHT = 80; 
-        
-        const ZOOM_MULTIPLIER = 3; // Enlarge 3x
-        const ACCENT_LINE_MULTIPLIER = 2; // Make accent line 2x longer
+        // --- CONFIG & STATE ---
+        const config = {
+            baseCardWidthPercent: 0.60, 
+            colors: {
+                // Tidak ada warna background box lagi
+                badgeBg: '#fdd835',
+                textPrimary: '#000000', 
+                textSecondary: '#000000', 
+                divider: '#ffffff',
+                // Gradien Biru Tua ke Hitam
+                timeStart: '#0d47a1', 
+                timeEnd: '#000000',
+                // Footer Putih Transparan 70%
+                footerColor: 'rgba(255, 255, 255, 0.7)'
+            },
+            baseFontSizes: { 
+                badge: 14,
+                time: 36,
+                date: 16,
+                address: 14,
+                code: 13,
+                padding: 20,
+                cornerRadius: 16
+            }
+        };
 
-        const FONT_FAMILY = "'Inter', -apple-system, sans-serif";
+        const state = {
+            isDragging: false,
+            isResizing: false,
+            dragStartX: 0,
+            dragStartY: 0,
+            posX: 0,
+            posY: 0,
+            currentScale: 1.0,
+            initialWidth: 0, 
+            // Transparan dipaksa
+            isTransparent: true 
+        };
 
-        // --- Elements ---
-        const imageInput = document.getElementById('imageInput');
-        const canvas = document.getElementById('outputCanvas');
-        const ctx = canvas.getContext('2d');
-        const emptyState = document.getElementById('emptyState');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const toast = document.getElementById('toast');
-        const opacityValDisplay = document.getElementById('opacityVal');
+        // --- DOM ELEMENTS ---
+        const els = {
+            fileInput: document.getElementById('file-input'),
+            dropZone: document.getElementById('drop-zone'),
+            sourceImage: document.getElementById('source-image'),
+            imageContainer: document.getElementById('image-container'),
+            emptyMsg: document.getElementById('empty-msg'),
+            settingsForm: document.getElementById('settings-form'),
+            previewOverlay: document.getElementById('preview-overlay'),
+            resizeHandle: document.getElementById('resize-handle'),
+            
+            // Inputs
+            inBadge: document.getElementById('input-badge'),
+            inTime: document.getElementById('input-time'),
+            inDate: document.getElementById('input-date'),
+            inAddress: document.getElementById('input-address'),
+            inCode: document.getElementById('input-code'),
+            
+            // DOM Preview Content
+            domBadge: document.getElementById('dom-badge'),
+            domTime: document.getElementById('dom-time'),
+            domDate: document.getElementById('dom-date'),
+            domAddress: document.getElementById('dom-address'),
+            domCode: document.getElementById('dom-code'),
+            domLine: document.getElementById('dom-line')
+        };
 
-        // Inputs
-        const timeLabelInput = document.getElementById('timeLabel');
-        const dateLabelInput = document.getElementById('dateLabel');
-        const addressLabelInput = document.getElementById('addressLabel');
-        const accentColorInput = document.getElementById('accentColor');
-        const bgCardColorInput = document.getElementById('bgCardColor');
-        const textColorInput = document.getElementById('textColor');
-        const cardOpacityInput = document.getElementById('cardOpacity');
+        let originalImage = null;
 
-        let currentImage = null;
-
-        // --- Event Listeners ---
-        imageInput.addEventListener('change', handleImageUpload);
-        
-        const inputs = [timeLabelInput, dateLabelInput, addressLabelInput, accentColorInput, bgCardColorInput, textColorInput, cardOpacityInput];
-        inputs.forEach(input => input.addEventListener('input', () => requestAnimationFrame(drawCanvas)));
-
-        // Opacity slider label update
-        cardOpacityInput.addEventListener('input', (e) => {
-            opacityValDisplay.textContent = Math.round(e.target.value * 100) + '%';
+        // --- EVENT LISTENERS ---
+        els.fileInput.addEventListener('change', handleFileSelect);
+        els.dropZone.addEventListener('dragover', (e) => { e.preventDefault(); els.dropZone.style.backgroundColor = '#dcedc8'; });
+        els.dropZone.addEventListener('dragleave', (e) => { e.preventDefault(); els.dropZone.style.backgroundColor = ''; });
+        els.dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            els.dropZone.style.backgroundColor = '';
+            if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
         });
 
-        downloadBtn.addEventListener('click', downloadImage);
+        // Listener untuk input teks saja
+        [els.inBadge, els.inTime, els.inDate, els.inAddress, els.inCode].forEach(input => {
+            input.addEventListener('input', updatePreviewContent);
+        });
 
-        // --- Functions ---
+        document.getElementById('download-btn').addEventListener('click', generate2KDownload);
 
-        function handleImageUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        // --- DRAG & RESIZE LOGIC ---
+        els.previewOverlay.addEventListener('mousedown', (e) => {
+            if (e.target === els.resizeHandle) return;
+            startDrag(e);
+        });
+        els.previewOverlay.addEventListener('touchstart', (e) => {
+             if (e.target === els.resizeHandle) return;
+             startDrag(e);
+        }, {passive: false});
 
-            loadingOverlay.style.display = 'flex';
+        els.resizeHandle.addEventListener('mousedown', startResize);
+        els.resizeHandle.addEventListener('touchstart', startResize, {passive: false});
 
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('touchmove', handleMove, {passive: false});
+
+        window.addEventListener('mouseup', endInteraction);
+        window.addEventListener('touchend', endInteraction);
+
+        function startDrag(e) {
+            e.preventDefault();
+            state.isDragging = true;
+            const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+            state.dragStartX = clientX - els.previewOverlay.offsetLeft;
+            state.dragStartY = clientY - els.previewOverlay.offsetTop;
+            els.previewOverlay.style.cursor = 'grabbing';
+            els.resizeHandle.style.opacity = '0';
+        }
+
+        function startResize(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            state.isResizing = true;
+            const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            state.resizeStartX = clientX;
+            state.resizeStartWidth = els.previewOverlay.offsetWidth;
+            state.resizeStartScale = state.currentScale;
+        }
+
+        function handleMove(e) {
+            if (state.isDragging) {
+                const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+                
+                let newLeft = clientX - state.dragStartX;
+                let newTop = clientY - state.dragStartY;
+
+                const maxLeft = els.imageContainer.offsetWidth - els.previewOverlay.offsetWidth;
+                const maxTop = els.imageContainer.offsetHeight - els.previewOverlay.offsetHeight;
+                
+                newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+                newTop = Math.max(0, Math.min(newTop, maxTop));
+
+                els.previewOverlay.style.left = newLeft + 'px';
+                els.previewOverlay.style.top = newTop + 'px';
+
+                state.posX = newLeft / els.imageContainer.offsetWidth;
+                state.posY = newTop / els.imageContainer.offsetHeight;
+            } 
+            else if (state.isResizing) {
+                const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+                const deltaX = clientX - state.resizeStartX;
+                const newWidth = state.resizeStartWidth + deltaX;
+                const newScale = Math.max(0.5, Math.min(newWidth / state.initialWidth, 2.5)); 
+
+                state.currentScale = newScale;
+                applyScaleStyles();
+            }
+        }
+
+        function endInteraction() {
+            state.isDragging = false;
+            state.isResizing = false;
+            els.previewOverlay.style.cursor = 'move';
+            els.resizeHandle.style.opacity = '';
+        }
+
+        // --- CORE LOGIC ---
+        function handleFileSelect(e) {
+            if (e.target.files.length) handleFile(e.target.files[0]);
+        }
+
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) return alert('Please upload an image file.');
             const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = new Image();
-                img.onload = () => {
-                    currentImage = img;
-                    
-                    // Force Width to 2560 (2K Standard) and adjust height by ratio
-                    const aspectRatio = img.height / img.width;
-                    canvas.width = TARGET_WIDTH_2K;
-                    canvas.height = Math.round(TARGET_WIDTH_2K * aspectRatio);
-                    
-                    emptyState.style.display = 'none';
-                    downloadBtn.disabled = false;
-                    
-                    drawCanvas();
-                    loadingOverlay.style.display = 'none';
+            reader.onload = (e) => {
+                els.sourceImage.src = e.target.result;
+                els.sourceImage.onload = () => {
+                    originalImage = els.sourceImage;
+                    els.emptyMsg.classList.add('hidden');
+                    els.imageContainer.classList.remove('hidden');
+                    els.settingsForm.classList.remove('hidden');
+                    resetOverlayState();
+                    updatePreviewContent();
                 };
-                img.onerror = () => {
-                    showToast('Error loading image');
-                    loadingOverlay.style.display = 'none';
-                };
-                img.src = event.target.result;
             };
             reader.readAsDataURL(file);
         }
 
-        function drawCanvas() {
-            if (!currentImage) return;
+        function resetOverlayState() {
+            const imgW = els.imageContainer.offsetWidth;
+            const targetWidth = imgW * config.baseCardWidthPercent;
+            
+            state.initialWidth = targetWidth; 
+            state.currentScale = 1.0;
+            
+            els.previewOverlay.style.width = targetWidth + 'px';
+            applyScaleStyles();
 
-            // 1. Draw Original Image (Scaled to 2K Width)
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
+            requestAnimationFrame(() => {
+                const cardH = els.previewOverlay.offsetHeight;
+                const padding = 30;
+                const newLeft = imgW - targetWidth - padding;
+                const newTop = els.imageContainer.offsetHeight - cardH - padding;
+                
+                els.previewOverlay.style.left = Math.max(0, newLeft) + 'px';
+                els.previewOverlay.style.top = Math.max(0, newTop) + 'px';
 
-            // 2. Draw Geotag
-            drawGeotagCard();
+                state.posX = els.previewOverlay.offsetLeft / imgW;
+                state.posY = els.previewOverlay.offsetTop / els.imageContainer.offsetHeight;
+            });
         }
 
-        /**
-         * Helper: Calculate text height without drawing
-         */
-        function measureTextHeight(ctx, text, maxWidth, lineHeight) {
-            if (!text) return 0;
-            const words = text.split(' ');
-            let line = '';
-            let lines = 0;
+        function applyScaleStyles() {
+            const s = state.currentScale;
+            const newWidth = state.initialWidth * s;
+            els.previewOverlay.style.width = newWidth + 'px';
+
+            const fs = config.baseFontSizes;
+
+            els.domBadge.style.fontSize = (fs.badge * s) + 'px';
+            els.domTime.style.fontSize = (fs.time * s) + 'px';
+            els.domDate.style.fontSize = (fs.date * s) + 'px';
+            els.domAddress.style.fontSize = (fs.address * s) + 'px';
+            els.domCode.style.fontSize = (fs.code * s) + 'px';
             
-            for (let n = 0; n < words.length; n++) {
-                const testLine = line + words[n] + ' ';
-                const metrics = ctx.measureText(testLine);
-                if (metrics.width > maxWidth && n > 0) {
-                    line = words[n] + ' ';
-                    lines++;
-                } else {
-                    line = testLine;
+            els.previewOverlay.style.padding = (fs.padding * s) + 'px';
+            els.previewOverlay.style.borderRadius = (fs.cornerRadius * s) + 'px';
+            els.domDate.style.marginBottom = (10 * s) + 'px';
+            els.domAddressWrapper.style.marginBottom = (15 * s) + 'px';
+            els.domDivider.style.marginBottom = (12 * s) + 'px';
+            els.domAddressLine.style.marginRight = (10 * s) + 'px';
+            els.domAddressLine.style.width = (3 * s) + 'px';
+
+            const newLineHeight = (fs.address * s * 1.4);
+            els.domAddress.style.lineHeight = newLineHeight + 'px';
+
+            requestAnimationFrame(() => {
+                els.domLine.style.height = 'auto';
+                els.domLine.style.height = els.domAddress.offsetHeight + 'px';
+            });
+        }
+
+        function updatePreviewContent() {
+            if (!originalImage) return;
+            els.domBadge.textContent = els.inBadge.value;
+            els.domTime.textContent = els.inTime.value;
+            els.domDate.textContent = els.inDate.value;
+            els.domAddress.textContent = els.inAddress.value;
+            els.domCode.textContent = els.inCode.value;
+
+            // Transparan Default, tidak perlu toggle
+            // els.previewOverlay.style.backgroundColor = 'transparent';
+
+            requestAnimationFrame(() => {
+                els.domLine.style.height = 'auto';
+                els.domLine.style.height = els.domAddress.offsetHeight + 'px';
+            });
+        }
+
+        // --- 2K GENERATION ---
+        function generate2KDownload() {
+            if (!originalImage) return;
+            const btn = document.getElementById('download-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Processing...';
+
+            setTimeout(() => {
+                try {
+                    const targetLongSide = 2048;
+                    const aspectRatio = originalImage.naturalWidth / originalImage.naturalHeight;
+                    let canvasW, canvasH;
+
+                    if (originalImage.naturalWidth > originalImage.naturalHeight) {
+                        canvasW = targetLongSide;
+                        canvasH = targetLongSide / aspectRatio;
+                    } else {
+                        canvasH = targetLongSide;
+                        canvasW = targetLongSide * aspectRatio;
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = canvasW;
+                    canvas.height = canvasH;
+                    const ctx = canvas.getContext('2d');
+
+                    ctx.drawImage(originalImage, 0, 0, canvasW, canvasH);
+                    drawStampOnCanvas(ctx, canvasW, canvasH);
+
+                    const link = document.createElement('a');
+                    link.download = 'geotag-transparent-v2-' + Date.now() + '.png';
+                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.click();
+
+                } catch (err) {
+                    console.error(err);
+                    alert('Error generating image.');
+                } finally {
+                    btn.innerHTML = originalText;
                 }
-            }
-            // Add 1 for the remaining line
-            return (lines + 1) * lineHeight;
+            }, 100);
         }
 
-        function drawGeotagCard() {
-            // Calculate Scale Factor
-            const widthRatio = canvas.width / BASE_WIDTH;
-            const scale = widthRatio * ZOOM_MULTIPLIER;
+        function drawStampOnCanvas(ctx, canvasW, canvasH) {
+            const isTransparent = state.isTransparent; // Selalu true
+            const s = state.currentScale;
+            const fs = config.baseFontSizes;
 
-            // Layout Dimensions (Dynamic)
-            const padding = 80 * scale;
-            const cardWidth = BASE_CARD_WIDTH * scale;
-            const cardPadding = 40 * scale;
-            const lineWidth = 6 * scale;
+            const baseW = canvasW * config.baseCardWidthPercent;
+            const cardW = baseW * s;
+            const padding = fs.padding * s;
+            const cornerRadius = fs.cornerRadius * s;
+
+            const cardX = state.posX * canvasW;
+            const cardY = state.posY * canvasH;
+
+            // Karena transparan, kita tidak menggambar kotak background
             
-            // Accent Line Height (2x longer)
-            const accentLineHeight = (BASE_ACCENT_LINE_HEIGHT * ACCENT_LINE_MULTIPLIER) * scale;
+            // -- DRAW CONTENT --
             
-            // Font Sizes (Dynamic)
-            const fontSizeLabel = BASE_FONT_LABEL * scale;
-            const fontSizeDate = BASE_FONT_DATE * scale;
-            const fontSizeAddr = BASE_FONT_ADDR * scale;
+            // Setup Shadow untuk teks agar terbaca di foto apapun
+            ctx.shadowColor = "rgba(0, 0, 0, 0.6)";
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetY = 2;
 
-            // Text Content
-            const txtTime = timeLabelInput.value || "TIME";
-            const txtDate = dateLabelInput.value || "DATE";
-            const txtAddr = addressLabelInput.value || "ADDRESS";
-            const colAccent = accentColorInput.value;
-            const colBg = bgCardColorInput.value;
-            const colText = textColorInput.value;
-            const cardOpacity = parseFloat(cardOpacityInput.value);
+            // Badge
+            const badgeText = els.inBadge.value;
+            ctx.fillStyle = config.colors.badgeBg;
+            ctx.font = `800 ${fs.badge * s}px 'Segoe UI', sans-serif`;
+            const badgePadding = 12 * s;
+            const badgeW = ctx.measureText(badgeText).width + (badgePadding * 2);
+            const badgeH = 24 * s;
+            roundRect(ctx, cardX + padding, cardY + padding, badgeW, badgeH, 6*s);
+            ctx.fill();
 
-            // --- PRE-CALCULATION FOR AUTO-HEIGHT ---
-            const lineHeightTime = fontSizeLabel * 1.2;
-            const lineHeightDate = fontSizeDate * 1.2;
-            const lineHeightAddr = fontSizeAddr * 1.3;
-            const maxTextW = cardWidth - (cardPadding * 2) - (25 * scale);
+            ctx.fillStyle = '#000000';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(badgeText, cardX + padding + (badgeW/2), cardY + padding + (badgeH/2));
 
-            // Set font temporarily to measure address
-            ctx.font = `${fontSizeAddr}px ${FONT_FAMILY}`;
-            const addressRenderHeight = measureTextHeight(ctx, txtAddr, maxTextW, lineHeightAddr);
-
-            // Calculate Total Content Height
-            // Fixed Height + Fixed Gaps + Dynamic Address Height
-            const totalContentHeight = lineHeightTime + (25 * scale) + lineHeightDate + (15 * scale) + addressRenderHeight;
-            const cardHeight = totalContentHeight + (cardPadding * 2);
-
-            // Positioning (Bottom Left)
-            const startX = padding;
-            const bottomY = canvas.height - padding;
-            const cardTopY = bottomY - cardHeight;
-
-            // --- Draw Card Background (With Opacity) ---
+            // Time
+            const timeText = els.inTime.value;
             ctx.save();
-            ctx.shadowColor = "rgba(0, 0, 0, 0.25)";
-            ctx.shadowBlur = 30 * scale;
-            ctx.shadowOffsetY = 15 * scale;
+            ctx.font = `800 ${fs.time * s}px 'Segoe UI', sans-serif`;
+            const timeW = ctx.measureText(timeText).width;
+            const timeX = cardX + cardW - padding - timeW;
+            const timeY = cardY + padding + (badgeH/2) + (2*s);
             
-            ctx.globalAlpha = cardOpacity;
-            ctx.fillStyle = colBg;
-            roundRect(ctx, startX, cardTopY, cardWidth, cardHeight, 20 * scale);
-            ctx.fill();
-            ctx.restore(); 
+            ctx.beginPath();
+            ctx.rect(timeX, timeY - (fs.time*s/2), timeW, fs.time*s);
+            ctx.clip();
+            const grad = ctx.createLinearGradient(0, timeY - (fs.time*s/2), 0, timeY + (fs.time*s/2));
+            grad.addColorStop(0, config.colors.timeStart);
+            grad.addColorStop(1, config.colors.timeEnd);
+            ctx.fillStyle = grad;
+            ctx.textBaseline = 'alphabetic';
+            ctx.fillText(timeText, timeX, timeY);
+            ctx.restore();
 
-            // --- Draw Accent Line ---
-            ctx.fillStyle = colAccent;
-            roundRect(ctx, startX + cardPadding, cardTopY + cardPadding + (10 * scale), lineWidth, accentLineHeight, lineWidth/2);
-            ctx.fill();
+            // Date (Hitam)
+            ctx.fillStyle = config.colors.textPrimary;
+            ctx.font = `600 ${fs.date * s}px 'Segoe UI', sans-serif`;
+            ctx.textBaseline = 'top';
+            let currentY = cardY + padding + badgeH + (10 * s);
+            ctx.fillText(els.inDate.value, cardX + padding, currentY);
 
-            ctx.fillStyle = colText;
+            // Address (Hitam)
+            currentY += (fs.date * s) + (10 * s);
+            
+            const lineX = cardX + padding;
+            const lineW = 3 * s;
+            
+            ctx.font = `normal ${fs.address * s}px 'Segoe UI', sans-serif`;
+            const maxAddrW = cardW - (padding * 2) - (3 * s) - (10 * s);
+            const addressLines = getLines(ctx, els.inAddress.value, maxAddrW);
+            const textLineH = fs.address * s * 1.4;
+            const totalAddrH = addressLines.length * textLineH;
 
-            // --- 1. Time Label (Yellow Box) ---
-            ctx.font = `bold ${fontSizeLabel}px ${FONT_FAMILY}`;
-            const timeMetrics = ctx.measureText(txtTime);
-            const textWidth = timeMetrics.width;
-            const tagH = lineHeightTime;
-            const paddingTagX = (30 * scale); 
-            const tagW = textWidth + (paddingTagX * 2);
+            ctx.fillStyle = config.colors.badgeBg;
+            ctx.fillRect(lineX, currentY, lineW, totalAddrH);
 
-            const tagX = startX + cardPadding + (25 * scale);
-            const tagY = cardTopY + (cardPadding * 0.6); 
+            ctx.fillStyle = config.colors.textSecondary; // Hitam
+            const textX = lineX + lineW + (10 * s);
+            addressLines.forEach((line, i) => {
+                ctx.fillText(line, textX, currentY + (i * textLineH));
+            });
+            currentY += totalAddrH;
 
-            ctx.fillStyle = colAccent;
-            roundRect(ctx, tagX, tagY, tagW, tagH, 12 * scale);
-            ctx.fill();
+            // Divider
+            currentY += (15 * s);
+            ctx.fillStyle = config.colors.divider;
+            ctx.fillRect(cardX + padding, currentY, cardW - (padding*2), 1*s);
 
-            ctx.fillStyle = "#ffffff";
-            ctx.textAlign = 'center';       
-            ctx.textBaseline = 'middle';    
-            ctx.fillText(txtTime, tagX + (tagW / 2), tagY + (tagH / 2));
+            // Footer (Putih Transparan)
+            currentY += (12 * s);
+            const shieldSize = 18 * s;
+            drawShield(ctx, cardX + padding, currentY + (2*s), shieldSize);
 
-            // --- 2. Date ---
-            ctx.fillStyle = colText;
-            ctx.textAlign = 'left';        
-            ctx.textBaseline = 'top';      
-            ctx.font = `${fontSizeDate}px ${FONT_FAMILY}`;
-            const dateY = tagY + lineHeightTime + (25 * scale);
-            ctx.fillText(txtDate, startX + cardPadding + (25 * scale), dateY);
-
-            // --- 3. Address ---
-            ctx.font = `${fontSizeAddr}px ${FONT_FAMILY}`;
-            const addrY = dateY + lineHeightDate + (15 * scale);
-            // Use the pre-calculated maxTextW and lineHeightAddr
-            wrapText(ctx, txtAddr, startX + cardPadding + (25 * scale), addrY, maxTextW, lineHeightAddr);
+            ctx.fillStyle = config.colors.footerColor;
+            ctx.font = `500 ${fs.code * s}px 'Segoe UI', sans-serif`;
+            ctx.textBaseline = 'middle';
+            ctx.fillText(els.inCode.value, cardX + padding + shieldSize + (8 * s), currentY + (shieldSize/2));
         }
 
-        // Helper: Rounded Rect
         function roundRect(ctx, x, y, w, h, r) {
             if (w < 2 * r) r = w / 2;
             if (h < 2 * r) r = h / 2;
@@ -547,49 +756,47 @@
             ctx.closePath();
         }
 
-        // Helper: Text Wrap
-        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-            const words = text.split(' ');
-            let line = '';
-            let currentY = y;
-
-            for (let n = 0; n < words.length; n++) {
-                const testLine = line + words[n] + ' ';
-                const metrics = ctx.measureText(testLine);
-                if (metrics.width > maxWidth && n > 0) {
-                    ctx.fillText(line, x, currentY);
-                    line = words[n] + ' ';
-                    currentY += lineHeight;
+        function getLines(ctx, text, maxWidth) {
+            const words = text.split(" ");
+            const lines = [];
+            let currentLine = words[0];
+            if (ctx.measureText(currentLine).width > maxWidth && currentLine.length > 0) {
+                lines.push(currentLine);
+                currentLine = "";
+            }
+            for (let i = 1; i < words.length; i++) {
+                const word = words[i];
+                const width = ctx.measureText(currentLine + " " + word).width;
+                if (width < maxWidth) {
+                    currentLine += " " + word;
                 } else {
-                    line = testLine;
+                    if (currentLine !== "") {
+                        lines.push(currentLine);
+                        currentLine = word;
+                    } else {
+                        lines.push(word); 
+                    }
                 }
             }
-            ctx.fillText(line, x, currentY);
+            if (currentLine !== "") lines.push(currentLine);
+            return lines;
         }
 
-        function downloadImage() {
-            if (!currentImage) return;
-            loadingOverlay.style.display = 'flex';
-            
-            setTimeout(() => {
-                try {
-                    const link = document.createElement('a');
-                    link.download = `geotag-2k-${Date.now()}.jpg`;
-                    link.href = canvas.toDataURL('image/jpeg', 0.95);
-                    link.click();
-                    showToast('Image downloaded!');
-                } catch (e) {
-                    showToast('Download failed.');
-                } finally {
-                    loadingOverlay.style.display = 'none';
-                }
-            }, 100);
-        }
-
-        function showToast(msg) {
-            toast.textContent = msg;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+        function drawShield(ctx, x, y, size) {
+            ctx.fillStyle = config.colors.footerColor; 
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.scale(size / 24, size / 24);
+            ctx.beginPath();
+            ctx.moveTo(12, 1);
+            ctx.lineTo(3, 5);
+            ctx.lineTo(3, 11);
+            ctx.bezierCurveTo(3, 16.55, 6.84, 21.74, 12, 23);
+            ctx.bezierCurveTo(17.16, 21.74, 21, 16.55, 21, 11);
+            ctx.lineTo(21, 5);
+            ctx.lineTo(12, 1);
+            ctx.fill();
+            ctx.restore();
         }
     </script>
 </body>
