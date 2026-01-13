@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geotag Transparent & Auto Badge</title>
+    <title>Geotag Badge Besar</title>
     <style>
         :root {
             --bg-color: #e8f5e9;
@@ -82,6 +82,8 @@
         }
         textarea { resize: vertical; min-height: 80px; }
 
+        input[type="range"] { width: 100%; cursor: pointer; }
+
         .btn {
             padding: 12px 20px;
             border: none;
@@ -129,17 +131,16 @@
             pointer-events: none;
         }
 
-        /* The Stamp Overlay - TRANSPARENT BY DEFAULT */
+        /* The Stamp Overlay */
         #preview-overlay {
             position: absolute;
-            background-color: transparent; /* Diubah jadi transparan */
-            box-shadow: none; /* Hapus bayangan kotak */
-            border: none; /* Hapus border */
+            background-color: transparent; 
+            box-shadow: none; 
+            border: none; 
             cursor: move;
             user-select: none;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             touch-action: none; 
-            /* Memberi sedikit border tipis putih saat hover agar mudah dilihat posisinya */
             transition: outline 0.2s;
         }
         #preview-overlay:hover {
@@ -181,26 +182,24 @@
         
         .dom-badge { 
             background: var(--accent-yellow); color: #000; font-weight: 800; 
-            padding: 4px 12px; border-radius: 6px; font-size: 14px; text-transform: uppercase; 
+            /* Default padding lebar, di-override JS */
+            padding: 8px 30px; 
+            border-radius: 6px; font-size: 14px; text-transform: uppercase; 
             white-space: nowrap;
             display: inline-block; 
-            width: fit-content;   /* Lebar otomatis ikut teks */
-            /* Text Shadow for readability on transparent bg */
+            width: fit-content;   
             text-shadow: 0px 1px 2px rgba(0,0,0,0.3);
         }
 
         .dom-time { 
             font-weight: 800; font-size: 36px; 
-            /* Gradien Biru Tua ke Hitam */
             background: linear-gradient(180deg, #0d47a1 0%, #000000 100%);
             -webkit-background-clip: text; background-clip: text; color: transparent; line-height: 1;
             white-space: nowrap;
-            /* Shadow added via span or canvas logic, visually gradient text handles contrast well */
         }
         
         .dom-date { font-size: 16px; font-weight: 600; color: #000000; margin-bottom: 10px; text-shadow: 0px 0px 4px rgba(255,255,255,0.5); }
         
-        /* ADDRESS WRAPPING */
         .dom-address-wrapper { 
             display: flex; 
             position: relative; 
@@ -235,7 +234,6 @@
             gap: 8px; 
             font-size: 13px; 
             font-weight: 500; 
-            /* Putih transparan 70% + Shadow */
             color: rgba(255, 255, 255, 0.7); 
             text-shadow: 0px 1px 3px rgba(0,0,0,0.8);
         }
@@ -251,7 +249,7 @@
         <aside class="controls">
             <div>
                 <h2>Geotag Settings</h2>
-                <p class="desc">Mode Full Transparan. Kotak Absensi Auto-Fit.</p>
+                <p class="desc">Kotak Absensi dibuat lebih besar dari teks.</p>
             </div>
 
             <div class="form-group">
@@ -268,7 +266,15 @@
             </div>
 
             <div id="settings-form" class="hidden">
-                <!-- Checkbox Transparan Dihapus karena default -->
+                <!-- SLIDER UKURAN KOTAK BESAR -->
+                <div class="form-group">
+                    <label>Ukuran Kotak (Padding)</label>
+                    <input type="range" id="input-badge-padding" min="10" max="80" value="30">
+                    <div style="display:flex; justify-content:space-between; font-size:11px; color:#888;">
+                        <span>Padat</span>
+                        <span>Besar</span>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label>Label (Badge)</label>
@@ -349,15 +355,12 @@
         const config = {
             baseCardWidthPercent: 0.60, 
             colors: {
-                // Tidak ada warna background box lagi
                 badgeBg: '#fdd835',
                 textPrimary: '#000000', 
                 textSecondary: '#000000', 
                 divider: '#ffffff',
-                // Gradien Biru Tua ke Hitam
                 timeStart: '#0d47a1', 
                 timeEnd: '#000000',
-                // Footer Putih Transparan 70%
                 footerColor: 'rgba(255, 255, 255, 0.7)'
             },
             baseFontSizes: { 
@@ -380,7 +383,6 @@
             posY: 0,
             currentScale: 1.0,
             initialWidth: 0, 
-            // Transparan dipaksa
             isTransparent: true 
         };
 
@@ -396,6 +398,7 @@
             resizeHandle: document.getElementById('resize-handle'),
             
             // Inputs
+            inBadgePadding: document.getElementById('input-badge-padding'),
             inBadge: document.getElementById('input-badge'),
             inTime: document.getElementById('input-time'),
             inDate: document.getElementById('input-date'),
@@ -423,8 +426,8 @@
             if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
         });
 
-        // Listener untuk input teks saja
-        [els.inBadge, els.inTime, els.inDate, els.inAddress, els.inCode].forEach(input => {
+        // Listener untuk Badge Padding + Input Teks
+        [els.inBadgePadding, els.inBadge, els.inTime, els.inDate, els.inAddress, els.inCode].forEach(input => {
             input.addEventListener('input', updatePreviewContent);
         });
 
@@ -575,6 +578,12 @@
             els.domAddressLine.style.marginRight = (10 * s) + 'px';
             els.domAddressLine.style.width = (3 * s) + 'px';
 
+            // Update Badge Padding dari Slider (di-scale dengan zoom)
+            const padBase = parseInt(els.inBadgePadding.value);
+            const padY = (padBase * 0.6) * s; // Padding Atas/Bawah sedikit lebih kecil
+            const padX = padBase * s;       // Padding Kiri/Kanang sesuai slider
+            els.domBadge.style.padding = `${padY}px ${padX}px`;
+
             const newLineHeight = (fs.address * s * 1.4);
             els.domAddress.style.lineHeight = newLineHeight + 'px';
 
@@ -592,8 +601,12 @@
             els.domAddress.textContent = els.inAddress.value;
             els.domCode.textContent = els.inCode.value;
 
-            // Transparan Default, tidak perlu toggle
-            // els.previewOverlay.style.backgroundColor = 'transparent';
+            // Update Badge Padding
+            const s = state.currentScale;
+            const padBase = parseInt(els.inBadgePadding.value);
+            const padY = (padBase * 0.6) * s;
+            const padX = padBase * s;
+            els.domBadge.style.padding = `${padY}px ${padX}px`;
 
             requestAnimationFrame(() => {
                 els.domLine.style.height = 'auto';
@@ -631,7 +644,7 @@
                     drawStampOnCanvas(ctx, canvasW, canvasH);
 
                     const link = document.createElement('a');
-                    link.download = 'geotag-transparent-v2-' + Date.now() + '.png';
+                    link.download = 'geotag-badge-besar-' + Date.now() + '.png';
                     link.href = canvas.toDataURL('image/png', 1.0);
                     link.click();
 
@@ -645,7 +658,7 @@
         }
 
         function drawStampOnCanvas(ctx, canvasW, canvasH) {
-            const isTransparent = state.isTransparent; // Selalu true
+            const isTransparent = state.isTransparent;
             const s = state.currentScale;
             const fs = config.baseFontSizes;
 
@@ -657,11 +670,9 @@
             const cardX = state.posX * canvasW;
             const cardY = state.posY * canvasH;
 
-            // Karena transparan, kita tidak menggambar kotak background
+            // Tidak ada background box (Transparan)
             
-            // -- DRAW CONTENT --
-            
-            // Setup Shadow untuk teks agar terbaca di foto apapun
+            // Setup Shadow
             ctx.shadowColor = "rgba(0, 0, 0, 0.6)";
             ctx.shadowBlur = 4;
             ctx.shadowOffsetY = 2;
@@ -670,9 +681,15 @@
             const badgeText = els.inBadge.value;
             ctx.fillStyle = config.colors.badgeBg;
             ctx.font = `800 ${fs.badge * s}px 'Segoe UI', sans-serif`;
-            const badgePadding = 12 * s;
-            const badgeW = ctx.measureText(badgeText).width + (badgePadding * 2);
-            const badgeH = 24 * s;
+            
+            // Ambil padding dari slider, kalikan dengan scale
+            const padBase = parseInt(els.inBadgePadding.value);
+            const padX = padBase * s;
+            const padY = (padBase * 0.6) * s; 
+
+            const badgeW = ctx.measureText(badgeText).width + (padX * 2);
+            const badgeH = (fs.badge * s * 1.5) + (padY * 2); // Tinggi dinamis
+
             roundRect(ctx, cardX + padding, cardY + padding, badgeW, badgeH, 6*s);
             ctx.fill();
 
